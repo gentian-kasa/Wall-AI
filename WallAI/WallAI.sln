@@ -5,6 +5,10 @@ VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WallAI.Learning", "WallAI.Learning\WallAI.Learning.csproj", "{0C8E2D39-9631-4BD5-BE36-E9E6474ED547}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WallAI.DataStructures", "WallAI.DataStructures\WallAI.DataStructures.csproj", "{EA895F39-2B79-4C7E-AB07-98B27707D0D9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{67205FB4-1225-46A3-B4DC-C5E11C845D16}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{0C8E2D39-9631-4BD5-BE36-E9E6474ED547}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C8E2D39-9631-4BD5-BE36-E9E6474ED547}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C8E2D39-9631-4BD5-BE36-E9E6474ED547}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA895F39-2B79-4C7E-AB07-98B27707D0D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA895F39-2B79-4C7E-AB07-98B27707D0D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA895F39-2B79-4C7E-AB07-98B27707D0D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA895F39-2B79-4C7E-AB07-98B27707D0D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67205FB4-1225-46A3-B4DC-C5E11C845D16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67205FB4-1225-46A3-B4DC-C5E11C845D16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67205FB4-1225-46A3-B4DC-C5E11C845D16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67205FB4-1225-46A3-B4DC-C5E11C845D16}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
