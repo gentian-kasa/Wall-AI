@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace WallAI.DataStructures
 {
-    public class Class1
+    /// <summary>
+    /// An interface for a generic Graph.
+    /// </summary>
+    public interface IGraph<TElem> : ICollection<TElem>
     {
     }
 }
