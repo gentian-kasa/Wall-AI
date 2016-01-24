@@ -14,16 +14,15 @@ namespace WallAI.DataStructures
         /// <summary>
         /// Get or Set the parent of this ITreeNode.
         /// </summary>
-        ITreeNode<TElem> Parent { get; set; }
+        ITreeNode<TElem> Parent { get; }
 
         /// <summary>
         /// Get or Set the children of this ITreeNode.
         /// </summary>
-        IEnumerable<ITreeNode<TElem>> Children { get; set; }
+        IEnumerable<ITreeNode<TElem>> Children { get; }
 
-        /// <summary>
-        /// Add a child ITreeNode to this ITreeNode.
-        /// </summary>
+        int Depth { get; }
+
         void Add(ITreeNode<TElem> child);
     }
 }

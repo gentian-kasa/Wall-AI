@@ -1,47 +1,78 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using WallAI.Extensions;
 
 namespace WallAI.DataStructures
 {
-    public class TreeNodeDFSEnumerator<TElem> : IEnumerator<ITreeNode<TElem>>
+    public class TreeNodeDFEnumerator<TElem> : IEnumerator<ITreeNode<TElem>>
     {
         private ITreeNode<TElem> _startingPoint;
-        private Stack<ITreeNode<TElem>> _stack = new Stack<ITreeNode<TElem>>();
+        private Stack<Tuple<int, ITreeNode<TElem>>> _stack
+            = new Stack<Tuple<int, ITreeNode<TElem>>>();
 
-        public ITreeNode<TElem> Current => _stack.Peek(); 
+        private ITreeNode<TElem> _currentNode;
+        public ITreeNode<TElem> Current => _currentNode;
+        object IEnumerator.Current => _currentNode;
 
-        object IEnumerator.Current => _stack.Peek(); 
+        public int DepthLimit { get; private set; }
 
-        public TreeNodeDFSEnumerator(ITreeNode<TElem> startingPoint)
+        public TreeNodeDFEnumerator(ITreeNode<TElem> startingPoint)
         {
             _startingPoint = startingPoint;
-            _stack.Push(startingPoint);
+            InitializeStack();
+            DepthLimit = -1;
+        }
+
+        public TreeNodeDFEnumerator(ITreeNode<TElem> startingPoint, int depthLimit)
+            : this(startingPoint)
+        {
+            DepthLimit = depthLimit;
         }
 
         public void Dispose()
         {
             _startingPoint = null;
             _stack = null;
+            _currentNode = null;
         }
 
         public bool MoveNext()
         {
-            var currentNode = _stack.Pop();
-            var children = currentNode.Children.ToList();
-
-            for(int i = children.Count - 1; i >= 0; i--)
+            if(_stack.Count == 0)
             {
-                _stack.Push(children[i]);
+                return false;
             }
 
-            return _stack.Count > 0;
+            var currentItem = _stack.Pop();
+            var currentDepth = currentItem.Item1;
+            _currentNode = currentItem.Item2;
+
+            if(currentDepth != DepthLimit)
+            {
+                var itemsToPush = _currentNode
+                    .Children
+                    .Reverse()
+                    .Select(child => Tuple.Create(currentDepth + 1, child));
+                _stack.PushAll(itemsToPush);
+            }
+
+            return true;
         }
 
         public void Reset()
         {
             _stack.Clear();
-            _stack.Push(_startingPoint);
+            InitializeStack();
+        }
+
+        private void InitializeStack()
+        {
+            var firstItem = Tuple.Create(0, _startingPoint);
+            _stack.Push(firstItem);
         }
     }
 }

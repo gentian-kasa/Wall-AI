@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{EA895F39-2B79-4C7E-AB07-98B27707D0D9}</ProjectGuid>
+    <ProjectGuid>{E7AAF925-9516-4D43-8F37-71F729D0AF61}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WallAI.DataStructures</RootNamespace>
-    <AssemblyName>WallAI.DataStructures</AssemblyName>
+    <RootNamespace>WallAI.Extensions</RootNamespace>
+    <AssemblyName>WallAI.Extensions</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -40,26 +40,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IGraph.cs" />
-    <Compile Include="INode.cs" />
-    <Compile Include="ITree.cs" />
-    <Compile Include="ITreeNode.cs" />
+    <Compile Include="DictionaryExtensions.cs" />
+    <Compile Include="QueueExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RemovalMode.cs" />
-    <Compile Include="SearchMode.cs" />
-    <Compile Include="Tree.cs" />
-    <Compile Include="TreeNode.cs" />
-    <Compile Include="TreeNodeBFEnumerator.cs" />
-    <Compile Include="TreeNodeDFEnumerator.cs" />
-    <Compile Include="TreeNodeElementBFEnumerator.cs" />
-    <Compile Include="TreeNodeElementDFEnumerator.cs" />
-    <Compile Include="VisitType.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\WallAI.Extensions\WallAI.Extensions.csproj">
-      <Project>{e7aaf925-9516-4d43-8f37-71f729d0af61}</Project>
-      <Name>WallAI.Extensions</Name>
-    </ProjectReference>
+    <Compile Include="StackExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
