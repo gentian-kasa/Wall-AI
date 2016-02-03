@@ -322,7 +322,7 @@ namespace WallAI.DataStructures
 
             return false;
         }
-
+        
         /// <summary>
         /// Updates this node's - and its parent's - children count. 
         /// </summary>
@@ -346,7 +346,9 @@ namespace WallAI.DataStructures
 
             while(currentNode != null)
             {
-                currentNode.Depth = currentNode.Children.Max(child => child.Depth) + 1;
+                currentNode.Depth = currentNode.Children.Count() > 0
+                    ? currentNode.Children.Max(child => child.Depth) + 1
+                    : 0;
                 currentNode = currentNode._parent;
             }
         }
@@ -358,7 +360,10 @@ namespace WallAI.DataStructures
             if(child != null && !child.Equals(default(TElem)))
             {
                 _children.Remove(child);
+                var parent = child._parent;
                 child._parent = null;
+                parent.UpdateCount();
+                parent.UpdateDepth();
 
                 return true;
             }

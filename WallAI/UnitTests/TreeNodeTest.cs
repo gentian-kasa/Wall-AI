@@ -325,5 +325,85 @@ namespace UnitTests
 
             Assert.IsFalse(actual);
         }
+
+        [TestMethod]
+        public void TestRemoveNotExistingNode()
+        {
+            var root = new TreeNode<int>(1);
+            root.Add(2);
+            root.Add(3);
+            root.Add(4);
+            root.Children.ElementAt(0).Add(5);
+            root.Children.ElementAt(1).Add(6);
+            root.Children.ElementAt(2).Add(7);
+            bool removalResult = root.Remove(8);
+            int[] expected = { 1, 2, 3, 4, 5, 6, 7 };
+            var bfEnumerator = root.GetEnumerator(VisitType.BreadthFirst);
+            var elements = new List<int>();
+
+            while (bfEnumerator.MoveNext())
+            {
+                elements.Add(bfEnumerator.Current);
+            }
+
+            var actual = elements.ToArray();
+
+            Assert.IsFalse(removalResult);
+            Assert.AreEqual(expected.Length, actual.Length);
+            Assert.AreEqual(expected.Length, root.Count);
+
+            for (int i = 0; i < expected.Length; i++)
+            {
+                Assert.AreEqual(expected[i], actual[i]);
+            }
+        }
+
+        [TestMethod]
+        public void TestRemoveExistingNodeThatIsNotRoot()
+        {
+            var root = new TreeNode<int>(1);
+            root.Add(2);
+            root.Add(3);
+            root.Add(4);
+            root.Children.ElementAt(0).Add(5);
+            root.Children.ElementAt(1).Add(6);
+            root.Children.ElementAt(2).Add(7);
+            bool removalResult = root.Remove(6);
+            int[] expected = { 1, 2, 3, 4, 5, 7 };
+            var bfEnumerator = root.GetEnumerator(VisitType.BreadthFirst);
+            var elements = new List<int>();
+
+            while (bfEnumerator.MoveNext())
+            {
+                elements.Add(bfEnumerator.Current);
+            }
+
+            var actual = elements.ToArray();
+
+            Assert.IsTrue(removalResult);
+            Assert.AreEqual(expected.Length, actual.Length);
+            Assert.AreEqual(expected.Length, root.Count);
+
+            for (int i = 0; i < expected.Length; i++)
+            {
+                Assert.AreEqual(expected[i], actual[i]);
+            }
+        }
+
+        [TestMethod]
+        public void TestRemoveExistingNodeThatIsRoot()
+        {
+            var root = new TreeNode<int>(1);
+            root.Add(2);
+            root.Add(3);
+            root.Add(4);
+            root.Children.ElementAt(0).Add(5);
+            root.Children.ElementAt(1).Add(6);
+            root.Children.ElementAt(2).Add(7);
+            bool removeResult = root.Remove(1);
+
+            // the removal of the root element is not allowed
+            Assert.IsFalse(removeResult);
+        }
     }
 }
