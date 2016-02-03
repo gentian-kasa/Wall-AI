@@ -235,5 +235,95 @@ namespace UnitTests
             Assert.AreEqual(root, root.Children.ElementAt(0).Parent);
             Assert.AreEqual(root, root.Children.ElementAt(1).Parent);
         }
+
+        [TestMethod]
+        public void TestFindExistingElementWithBFS()
+        {
+            var root = new TreeNode<int>(1);
+            root.Add(2);
+            root.Add(3);
+            root.Add(4);
+            root.Children.ElementAt(0).Add(5);
+            root.Children.ElementAt(1).Add(6);
+            root.Children.ElementAt(2).Add(7);
+            var actual = root.Contains(7, SearchMode.BreadthFirstSearch);
+
+            Assert.IsTrue(actual);
+        }
+
+        [TestMethod]
+        public void TestFindNotExistingElementWithBFS()
+        {
+            var root = new TreeNode<int>(1);
+            root.Add(2);
+            root.Add(3);
+            root.Add(4);
+            root.Children.ElementAt(0).Add(5);
+            root.Children.ElementAt(1).Add(6);
+            root.Children.ElementAt(2).Add(7);
+            var actual = root.Contains(8, SearchMode.BreadthFirstSearch);
+
+            Assert.IsFalse(actual);
+        }
+
+        [TestMethod]
+        public void TestFindExistingElementWithDFS()
+        {
+            var root = new TreeNode<int>(1);
+            root.Add(2);
+            root.Add(3);
+            root.Add(4);
+            root.Children.ElementAt(0).Add(5);
+            root.Children.ElementAt(1).Add(6);
+            root.Children.ElementAt(2).Add(7);
+            var actual = root.Contains(7, SearchMode.DepthFirstSearch);
+
+            Assert.IsTrue(actual);
+        }
+
+        [TestMethod]
+        public void TestFindNotExistingElementWithDFS()
+        {
+            var root = new TreeNode<int>(1);
+            root.Add(2);
+            root.Add(3);
+            root.Add(4);
+            root.Children.ElementAt(0).Add(5);
+            root.Children.ElementAt(1).Add(6);
+            root.Children.ElementAt(2).Add(7);
+            var actual = root.Contains(8, SearchMode.DepthFirstSearch);
+
+            Assert.IsFalse(actual);
+        }
+
+        [TestMethod]
+        public void TestFindExistingElementWithIterativeDeepening()
+        {
+            var root = new TreeNode<int>(1);
+            root.Add(2);
+            root.Add(3);
+            root.Add(4);
+            root.Children.ElementAt(0).Add(5);
+            root.Children.ElementAt(1).Add(6);
+            root.Children.ElementAt(2).Add(7);
+            var actual = root.Contains(7, SearchMode.IterativeDeepening);
+
+            Assert.IsTrue(actual);
+        }
+
+        [TestMethod]
+        public void TestFindNotExistingElementWithIterativeDeepening()
+        {
+            var root = new TreeNode<int>(1);
+            root.Add(2);
+            root.Add(3);
+            root.Add(4);
+            root.Children.ElementAt(0).Add(5);
+            root.Children.ElementAt(1).Add(6);
+            root.Children.ElementAt(2).Add(7);
+            var actual = root.Contains(8, SearchMode.IterativeDeepening);
+
+            Assert.IsFalse(actual);
+        }
     }
 }

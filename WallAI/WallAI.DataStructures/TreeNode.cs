@@ -143,46 +143,55 @@ namespace WallAI.DataStructures
 
         public bool Contains(TElem item, SearchMode searchMode)
         {
-            return FindAll(item, searchMode).Count() > 0;
+            return Contains(item, searchMode, Depth);
+        }
+
+        public bool Contains(TElem item, SearchMode searchMode, int depthLimit)
+        {
+            return FindAll(item, searchMode, depthLimit).Count() > 0;
         }
 
         public IEnumerable<ITreeNode<TElem>> FindAll(TElem item)
         {
-            return FindAll(item, SearchMode.IterativeDeepening);
+            return FindAll(item, Depth);
         }
 
-        public IEnumerable<ITreeNode<TElem>> FindAll(TElem item, SearchMode searchMode)
+        public IEnumerable<ITreeNode<TElem>> FindAll(TElem item, int depthLimit)
+        {
+            return FindAll(item, SearchMode.IterativeDeepening, depthLimit);
+        }
+
+        public IEnumerable<ITreeNode<TElem>> FindAll(TElem item, SearchMode searchMode, int depthLimit)
         {
             if(searchMode == SearchMode.BreadthFirstSearch)
             {
-                return FindAllWithBFS(item);
+                return FindAllWithBFS(item, depthLimit);
             }
 
             if(searchMode == SearchMode.DepthFirstSearch)
             {
-                return FindAllWithDFS(item);
+                return FindAllWithDFS(item, depthLimit);
             }
 
-            return FindAllWithIterativeDeepening(item);
+            return FindAllWithIterativeDeepening(item, depthLimit);
         }
 
-        private IEnumerable<ITreeNode<TElem>> FindAllWithBFS(TElem item)
+        private IEnumerable<ITreeNode<TElem>> FindAllWithBFS(TElem item, int depthLimit)
         {
-            return FindAll(item, new TreeNodeBFEnumerator<TElem>(this));
+            return FindAll(item, new TreeNodeBFEnumerator<TElem>(this, depthLimit));
         }
 
-        private IEnumerable<ITreeNode<TElem>> FindAllWithDFS(TElem item)
+        private IEnumerable<ITreeNode<TElem>> FindAllWithDFS(TElem item, int depthLimit)
         {
-            return FindAll(item, new TreeNodeDFEnumerator<TElem>(this));
+            return FindAll(item, new TreeNodeDFEnumerator<TElem>(this, depthLimit));
         }
 
-        private IEnumerable<ITreeNode<TElem>> FindAllWithIterativeDeepening(TElem item)
+        private IEnumerable<ITreeNode<TElem>> FindAllWithIterativeDeepening(TElem item, int depthLimit)
         {
-            int depth = Depth;
             var result = new Dictionary<ITreeNode<TElem>, ITreeNode<TElem>>();
             IEnumerable<ITreeNode<TElem>> currentNodes;
-
-            for(int i = 1; i <= depth; i++)
+            
+            for(int i = 1; i <= depthLimit; i++)
             {
                 currentNodes = FindAll(item, new TreeNodeDFEnumerator<TElem>(this, i));
                 result.AddNonPresent(
@@ -216,14 +225,102 @@ namespace WallAI.DataStructures
             yield break;
         }
 
-        public void CopyTo(TElem[] array, int arrayIndex)
+        public IEnumerable<ITreeNode<TElem>> GetAllNodes()
         {
-            throw new NotImplementedException();
+            return GetAllNodes(VisitType.BreadthFirst);
         }
 
+        public IEnumerable<ITreeNode<TElem>> GetAllNodes(VisitType visitType)
+        {
+            if(visitType == VisitType.BreadthFirst)
+            {
+                return GetAllNodes(new TreeNodeBFEnumerator<TElem>(this));
+            }
+
+            return GetAllNodes(new TreeNodeDFEnumerator<TElem>(this));
+        }
+        
+        public IEnumerable<ITreeNode<TElem>> GetAllNodes(IEnumerator<ITreeNode<TElem>> enumerator)
+        {
+            if (enumerator == null)
+            {
+                throw new ArgumentNullException(nameof(enumerator));
+            }
+
+            while (enumerator.MoveNext())
+            {
+                yield return enumerator.Current;
+            }
+
+            yield break;
+        }
+
+        /// <inheritdoc cref="ICollection{T}"></inheritdoc>
+        public void CopyTo(TElem[] array, int arrayIndex)
+        {
+            CopyTo(array, arrayIndex, VisitType.BreadthFirst);
+        }
+
+        public void CopyTo(TElem[] array, int arrayIndex, VisitType visitType)
+        {
+            if (array == null)
+            {
+                throw new ArgumentNullException(nameof(array));
+            }
+
+            if (arrayIndex < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(arrayIndex));
+            }
+
+            var items = GetAllNodes(visitType).ToArray();
+
+            if (items.Length > array.Length - arrayIndex)
+            {
+                throw new ArgumentException(
+                    $"The number of elements in this ICollection is greater than the available space from {arrayIndex} to the end of the destination array.");
+            }
+
+            Array.Copy(sourceArray: items,
+                       sourceIndex: 0,
+                       destinationArray: array,
+                       destinationIndex: arrayIndex,
+                       length: items.Length);
+        }
+
+        /// <inheritdoc cref="ICollection{T}"></inheritdoc>
         public bool Remove(TElem item)
         {
-            throw new NotImplementedException();
+            return Remove(item, VisitType.BreadthFirst);
+        }
+
+        public bool Remove(TElem item, VisitType visitType)
+        {
+            if(visitType == VisitType.BreadthFirst)
+            {
+                return Remove(item, new TreeNodeBFEnumerator<TElem>(this));
+            }
+
+            return Remove(item, new TreeNodeDFEnumerator<TElem>(this));
+        }
+
+        public bool Remove(TElem item, IEnumerator<ITreeNode<TElem>> enumerator)
+        {
+            if (TryRemoveFromChildren(item))
+            {
+                return true;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                if ((enumerator.Current is TreeNode<TElem>) 
+                    && (enumerator.Current as TreeNode<TElem>).TryRemoveFromChildren(item))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -252,6 +349,21 @@ namespace WallAI.DataStructures
                 currentNode.Depth = currentNode.Children.Max(child => child.Depth) + 1;
                 currentNode = currentNode._parent;
             }
+        }
+
+        private bool TryRemoveFromChildren(TElem item)
+        {
+            TreeNode<TElem> child = Children.FirstOrDefault(c => c.Element.Equals(item)) as TreeNode<TElem>;
+
+            if(child != null && !child.Equals(default(TElem)))
+            {
+                _children.Remove(child);
+                child._parent = null;
+
+                return true;
+            }
+
+            return false;
         }
     }
 }
